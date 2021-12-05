@@ -3,7 +3,7 @@
 
 # configuration
 .env
-.husky
+# .husky
 
 # build
 /build

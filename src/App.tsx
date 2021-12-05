@@ -25,8 +25,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const ReactApp: React.FC = () => {
   return (
     <Router>
-      <Helmet titleTemplate="%s - React Starter" defaultTitle="React Starter">
-        <meta name="description" content="A React Starter application" />
+      <Helmet titleTemplate="%s - Alden nguyen" defaultTitle="Alden nguyen">
+        <meta name="description" content="A simple resume about alden nguyen" />
       </Helmet>
 
       <ConnectedRouter history={history}>
