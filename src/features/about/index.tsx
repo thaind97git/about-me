@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import MainLayout from '@/components/main-layout';
+import { useDispatch } from 'react-redux';
+import { IProfile } from 'config/@types/app.d';
+import { getProfile } from '@/apis/profile';
+import { setLoading } from '@/store/slices/appSlice';
 
 const About: React.FC = () => {
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState<IProfile>();
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await getProfile();
+      setProfile(data);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
   return (
     <MainLayout>
       {/* About */}
@@ -9,15 +30,9 @@ const About: React.FC = () => {
         <h1 className="title title--h1 first-title title__separate">
           About Me
         </h1>
-        {`I'm software Developer from HCM, Vietnam started with Javascript as a Front-End. I have a good understanding of Reactjs and Redux data flow. I also have middle knowledge of the Nodejs platform and the No-SQL database (MongoDB).`}
-        <p>
-          {`My job involves doing what I love, Developing new websites/applications, customer relationship management (CRM) applications and developing fantastic content management systems (CMS). Currently, I'm woking full-time an outsource company and freelancer for some partners that worked with me for a long time.`}
-        </p>
-        <p>
-          I spend a lot of time learning new techniques and actively help other
-          people learn web development through a variety of help groups. I think
-          this is a main key help me improve my-seft every day.
-        </p>
+        {profile && (
+          <div dangerouslySetInnerHTML={{ __html: profile.introHtml }} />
+        )}
       </div>
       {/* What */}
       <div className="box-inner pb-0">

@@ -13,6 +13,8 @@ export interface IProfile {
   readonly lastName: string;
   readonly address: string;
   readonly phone: string;
+  readonly introHtml: string;
+  readonly introMarkdown: string;
   readonly avatar: string;
   readonly roles: AppRoles;
   readonly date: Date;
