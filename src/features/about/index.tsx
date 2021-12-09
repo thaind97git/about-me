@@ -1,13 +1,53 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import MainLayout from '@/components/main-layout';
 import { useDispatch } from 'react-redux';
-import { IProfile } from 'config/@types/app.d';
-import { getProfile } from '@/apis/profile';
+import Swiper from 'react-id-swiper';
+import SwiperCore, { Pagination } from 'swiper';
 import { setLoading } from '@/store/slices/appSlice';
+import { getProfile } from '@/apis/profile';
 
+import MainLayout from '@/components/main-layout';
+import { IProfile } from 'config/@types/app.d';
+
+import FPT from '@/static/images/clients/fpt.png';
+import Wao from '@/static/images/clients/wao.png';
+import Dino from '@/static/images/clients/dino.png';
+
+SwiperCore.use([Pagination]);
 const About: React.FC = () => {
   const dispatch = useDispatch();
   const [profile, setProfile] = useState<IProfile>();
+  const params = {
+    slidesPerView: 5,
+    spaceBetween: 30,
+    speed: 300,
+    grabCursor: true,
+    watchOverflow: true,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    autoplay: {
+      delay: 5000,
+    },
+    breakpoints: {
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 10,
+      },
+      640: {
+        slidesPerView: 2,
+        spaceBetween: 20,
+      },
+      991: {
+        slidesPerView: 3,
+        spaceBetween: 30,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 40,
+      },
+    },
+  };
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -24,7 +64,7 @@ const About: React.FC = () => {
   }, [fetchProfile]);
 
   return (
-    <MainLayout>
+    <MainLayout className="about">
       {/* About */}
       <div className="pb-0 pb-sm-2">
         <h1 className="title title--h1 first-title title__separate">
@@ -69,6 +109,26 @@ const About: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="box-inner box-inner--rounded">
+        <h2 className="title title--h3">Clients</h2>
+        <Swiper
+          containerClass="js-carousel-clients swiper-container swiper-container-horizontal"
+          {...params}
+        >
+          <a href="#">
+            <img className="logo" src={FPT} alt="FPT" />
+            <label>Fpt Software</label>
+          </a>
+          <a href="#">
+            <img className="logo" src={Wao} alt="Wao" />
+            <label>Wao Studio</label>
+          </a>
+          <a href="#">
+            <img className="logo" src={Dino} alt="Dinovative" />
+            <label>Dinovative</label>
+          </a>
+        </Swiper>
       </div>
     </MainLayout>
   );

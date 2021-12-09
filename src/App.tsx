@@ -13,6 +13,9 @@ import '@/locales/i18n';
 
 import '@/services/axios-base';
 
+// load swiper styles
+import '@/static/css/swiper.min.css';
+
 // load app SCSS styles
 import '@/styles/App.scss';
 

@@ -6,6 +6,7 @@ import Footer from '@/layouts/footer';
 
 interface IProps {
   children?: React.ReactNode | null;
+  className?: string;
 }
 
 interface IItem {
@@ -36,7 +37,7 @@ const Menu: IItem[] = [
   },
 ];
 
-const MainLayout: React.FC<IProps> = ({ children }) => {
+const MainLayout: React.FC<IProps> = ({ children, className }) => {
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState(false);
 
@@ -88,7 +89,7 @@ const MainLayout: React.FC<IProps> = ({ children }) => {
             })}
           </ul>
         </div>
-        {children}
+        <div className={className}>{children}</div>
       </div>
       <Footer />
     </>

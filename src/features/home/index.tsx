@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MainLayout from '@/components/main-layout';
+import { goURL } from '@/helpers/router';
 
 const Home: React.FC = () => {
+  useEffect(() => {
+    goURL('/about-me');
+  }, []);
   return (
     <MainLayout>
       {/* About */}
