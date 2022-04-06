@@ -955,6 +955,7 @@ button:focus {
   background-color: #fff;
   border-radius: 20px;
   padding: 1.875rem;
+  padding-bottom: 0px !important;
   position: relative;
   transition: box-shadow 0.3s ease-in-out;
 }

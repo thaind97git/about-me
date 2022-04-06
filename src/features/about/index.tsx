@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import Swiper from 'react-id-swiper';
 import SwiperCore, { Pagination } from 'swiper';
-import { setLoading } from '@/store/slices/appSlice';
-import { getProfile } from '@/apis/profile';
+import { selectCurrentUser } from '@/store/slices/authSlice';
 
 import MainLayout from '@/components/main-layout';
-import { IProfile } from 'config/@types/app.d';
 
 import FPT from '@/static/images/clients/fpt.png';
 import Wao from '@/static/images/clients/wao.png';
@@ -14,8 +12,7 @@ import Dino from '@/static/images/clients/dino.png';
 
 SwiperCore.use([Pagination]);
 const About: React.FC = () => {
-  const dispatch = useDispatch();
-  const [profile, setProfile] = useState<IProfile>();
+  const profile = useSelector(selectCurrentUser);
   const params = {
     slidesPerView: 5,
     spaceBetween: 30,
@@ -48,20 +45,6 @@ const About: React.FC = () => {
       },
     },
   };
-
-  const fetchProfile = useCallback(async () => {
-    try {
-      dispatch(setLoading(true));
-      const { data } = await getProfile();
-      setProfile(data);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
 
   return (
     <MainLayout className="about">

@@ -70,7 +70,7 @@ const RightContent: React.FC<ISubSections> = ({ sections }) => {
   return (
     <>
       <hr />
-      {ensureArray(sections)
+      {ensureArray([...sections])
         .sort((x, y) => x.position - y.position)
         .map(section => (
           <div className="right-item" key={section.id}>

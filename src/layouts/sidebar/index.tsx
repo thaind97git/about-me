@@ -1,15 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { getProfile, getSocialLst } from '@/apis/profile';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSocialLst } from '@/apis/profile';
 import { setLoading } from '@/store/slices/appSlice';
-import { IProfile, ISocial } from 'config/@types/app';
+import { ISocial } from 'config/@types/app';
 
-import { ensureArray } from '@/utils';
+import { ensureArray, handleDownLoadFile } from '@/utils';
 
 import Avatar from '@/static/images/avatar.jpg';
-import useWindowSize from '@/hooks/useWindowSize';
+import { getExportPDFResume } from '@/utils/export';
+import { exportPDF } from '@/apis/_export';
+import { errorHandler } from '@/helpers/axios';
+import { selectCurrentUser } from '@/store/slices/authSlice';
 
 const defaultShortName = 'Alden Nguyen';
+
+const isEnableDownload = process.env.ENABLE_DOWNLOAD_RESUME;
 
 const defaultSocials = [
   {
@@ -35,23 +40,36 @@ const defaultProfile = {
   email: 'thaind97.dev@gmail.com',
   phone: '0934496440',
 };
-
 const SideBar: React.FC = () => {
   const dispatch = useDispatch();
-  const [profile, setProfile] = useState<IProfile>();
   const [socials, setSocials] = useState<ISocial[]>();
 
-  const { width, isIpad } = useWindowSize();
+  const profile = useSelector(selectCurrentUser);
 
-  const fetchProfile = useCallback(async () => {
-    try {
-      dispatch(setLoading(true));
-      const { data } = await getProfile();
-      setProfile(data);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [dispatch]);
+  const handleDownLoadPDF = useCallback(
+    async (event: React.FormEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      if (!isEnableDownload) {
+        return;
+      }
+      try {
+        dispatch(setLoading(true));
+        const payload = getExportPDFResume();
+
+        if (!payload) {
+          return;
+        }
+
+        const { data } = await exportPDF(payload);
+        handleDownLoadFile(data, 'thaind-resume');
+      } catch (error) {
+        errorHandler(error);
+      } finally {
+        dispatch(setLoading(false));
+      }
+    },
+    [dispatch],
+  );
 
   const fetchSocial = useCallback(async () => {
     try {
@@ -64,11 +82,9 @@ const SideBar: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    Promise.all([fetchProfile(), fetchSocial()]).catch(error => {
-      console.log({ error });
-    });
-  }, [fetchProfile, fetchSocial]);
-  console.log({ isIpad, width });
+    fetchSocial();
+  }, [fetchSocial]);
+
   //is_stuck
   return (
     <div className={`sidebar box shadow pb-0 `}>
@@ -171,7 +187,7 @@ const SideBar: React.FC = () => {
           </li>
         </ul>
         <div>
-          <a className="btn" href="#">
+          <a className="btn" onClick={handleDownLoadPDF}>
             <i className="font-icon icon-download" /> Download CV
           </a>
         </div>

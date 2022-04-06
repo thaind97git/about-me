@@ -1,18 +1,28 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import routes from '@/router';
-import { compareTwoObject } from '@/utils';
+import React, { useCallback, useEffect } from 'react';
+import { Route, Switch, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile } from '@/apis/profile';
 import {
   ILayout,
   selectDisplayLayout,
   setDisplayLayout,
 } from '@/store/slices/layoutSlice';
+import { selectCurrentUser, setCurrentUser } from '@/store/slices/authSlice';
+import { setLoading } from '@/store/slices/appSlice';
+
+import ResumePage from '@/features/resume';
 import { useShallowEqualSelector } from '@/hooks/useShallowEqualSelector';
+import { compareTwoObject } from '@/utils';
+import routes from '@/router';
 
 const Main: React.FC = () => {
   const layout: ILayout = useShallowEqualSelector(selectDisplayLayout);
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  const profile = useSelector(selectCurrentUser);
+
+  const isResumePage = location.pathname === '/resume';
 
   const updateDisplayLayout = (currentLayout: ILayout, layout: ILayout) => {
     const layoutUpdated = currentLayout
@@ -24,8 +34,25 @@ const Main: React.FC = () => {
     }
   };
 
+  const fetchProfile = useCallback(async () => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await getProfile();
+      dispatch(setCurrentUser(data));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!profile?.id) {
+      fetchProfile();
+    }
+  }, [profile, fetchProfile]);
+
   return (
     <div id="main" className="main">
+      {!isResumePage && <ResumePage hidden />}
       <Switch>
         {routes.map(
           ({

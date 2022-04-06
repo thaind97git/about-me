@@ -77,3 +77,31 @@ export const scrollTo = (element: HTMLElement, rest: unknown): void => {
     element.scrollTo(rest);
   }
 };
+
+export const download = (url: string, filename: string): void => {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+export const createObjectURL = (data: unknown): string => {
+  if (window) {
+    return (window.URL || window.webkitURL).createObjectURL(data);
+  }
+};
+
+export const handleDownLoadFile = (
+  data: BlobPart,
+  fileName: string,
+  type = 'application/pdf',
+): void => {
+  if (!type || !data) {
+    return;
+  }
+  const url = createObjectURL(new Blob([data], { type }));
+
+  fileName && download(url, `${fileName}.pdf`);
+};
