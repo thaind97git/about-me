@@ -1,13 +1,17 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { history } from '@/store';
+import { selectCurrentUser } from '@/store/slices/authSlice';
 import { ConnectedRouter } from 'connected-react-router';
 import { ToastContainer } from 'react-toastify';
-import { Helmet } from 'react-helmet-async';
 
 import Layout from '@/layouts';
+import SEO from './components/seo';
 import PageLoading from '@/components/page-loading';
+import env from '@/constants/env';
 
+import { b64toBlob, createObjectURL } from './utils';
 // multi language
 import '@/locales/i18n';
 
@@ -26,11 +30,20 @@ import '@/static/fonts/fontawesome-free-5.15.4/css/all.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ReactApp: React.FC = () => {
+  const profile = useSelector(selectCurrentUser);
+  const [image, setImage] = useState<null | string>();
+  const avatar = profile?.avatar;
+
+  useEffect(() => {
+    if (avatar && env.enableBlobAvatarSEO) {
+      const blob = b64toBlob(avatar.split(',')[1]);
+      const blobUrl = createObjectURL(blob);
+      setImage(blobUrl);
+    }
+  }, [avatar]);
   return (
     <Router>
-      <Helmet titleTemplate="%s - Alden nguyen" defaultTitle="Alden nguyen">
-        <meta name="description" content="A simple resume about alden nguyen" />
-      </Helmet>
+      <SEO imageHeader={image} />
 
       <ConnectedRouter history={history}>
         <Suspense fallback={<PageLoading show />}>
