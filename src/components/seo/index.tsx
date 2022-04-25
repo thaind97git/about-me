@@ -17,11 +17,6 @@ const SEO: React.FC<IProps> = ({
   return (
     <div>
       <Helmet>
-        {/* <!-- Google verify --> */}
-        <meta
-          name="google-site-verification"
-          content="44OmUOnBx-w41ler_JWLuIe4mKEWoXDMGYLTZDhSdNc"
-        />
         {/* <!-- HTML Meta Tags --> */}
         <title>{title}</title>
         <meta name="description" content={description} />
