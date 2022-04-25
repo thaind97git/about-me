@@ -12,7 +12,7 @@ const SEO: React.FC<IProps> = ({
   title = 'Alden Nguyen',
   description = 'Simply information about me',
   imageHeader = 'https://avatars2.githubusercontent.com/u/42630357?s=460&v=4',
-  url = 'https://aldenn.vercel.app',
+  url = 'https://thaind97.vercel.app',
 }) => {
   return (
     <div>

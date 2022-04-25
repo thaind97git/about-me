@@ -43,7 +43,7 @@ const ReactApp: React.FC = () => {
   }, [avatar]);
   return (
     <Router>
-      <SEO imageHeader={image} />
+      <SEO imageHeader={image} url={env.originUrl} />
 
       <ConnectedRouter history={history}>
         <Suspense fallback={<PageLoading show />}>
